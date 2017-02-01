@@ -20,20 +20,20 @@ $ npm install --save-dev fly-watch
 module.exports = {
   * lint(fly, opts) {
     // process single file via `opts.src` if populated
-    yield fly.source(opts.src || 'src/*.js').eslint();
+    yield fly.source(opts.src || "src/*.js").eslint()
   },
   * scripts(fly, opts) {
     // process single file via `opts.src` if populated
-    yield fly.source(opts.src || 'src/*.js').babel({ presets: ['es2015'] }).target('dist/js');
+    yield fly.source(opts.src || "src/*.js").babel({ presets: ["es2015"] }).target("dist/js")
   },
   * styles(fly) {
-    yield fly.source('src/app.sass').sass().target('dist/css');
+    yield fly.source("src/app.sass").sass().target("dist/css")
   },
   * default(fly) {
     // watch all JS files; run 'lint' then 'scripts'
-    yield fly.watch('src/**/*.js', ['lint', 'scripts']);
-    // watch multiple paths; only run 'styles'
-    yield fly.watch(['src/foo/*.sass', 'src/*.sass'], 'styles');
+    yield fly.watch("src/**/*.js", ["lint", "scripts"])
+    // watch multiple paths; only run "styles"
+    yield fly.watch(["src/foo/*.sass", "src/*.sass"], "styles")
   }
 }
 ```
