@@ -21,8 +21,13 @@ module.exports = function (fly) {
 			.watch(globs, {ignoreInitial: 1})
 			.on("error", this.$.error)
 			.on("all", (event, filepath) => {
-				// stash previous globs; used within `target`
+				// store previous globs (`prevs`)
+				// used within `target` for `trims`
 				this._.prevs = globs
+				// also update ALL chained `tasks` for their own `target`
+				tasks.forEach(k => {
+					fly.tasks[k].data.prevs = globs
+				})
 				// broadcast
 				this.emit("fly_watch_event", {action: types[event], file: filepath})
 				// pass single file to task params
