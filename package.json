@@ -29,12 +29,17 @@
     "chokidar": "^1.6.1"
   },
   "devDependencies": {
+    "bluebird": "^3.4.7",
+    "fly": "^2.0.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
+    "touch": "^1.0.0",
     "xo": "^0.16.0"
   },
   "xo": {
     "rules": {
+      "xo/no-process-exit": 0,
+      "require-yield": 1,
       "quotes": 0,
       "semi": 0
     }
