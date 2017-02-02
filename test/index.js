@@ -7,7 +7,8 @@ const Fly = require("fly")
 const fixtures = join(__dirname, "fixtures")
 
 test("fly.watch", co(function * (t) {
-	t.plan(17)
+	// t.plan(17)
+	t.plan(14)
 
 	const glob = join(fixtures, "*.js")
 	const file = join(fixtures, "foo.js")
@@ -27,13 +28,22 @@ test("fly.watch", co(function * (t) {
 			},
 			* foo(f, o) {
 				order.push("foo")
-				t.pass("execute tasks when `watch` starts")
-				t.equal(o.val, val, "retain `serial` options behavior")
-				return ++val
+				t.equal(o.val, 11, "cascade `serial` task values")
+				t.deepEqual(order, want, "run `watch` task chain in `serial` mode")
+
+				t.equal(o.src, file, "(foo) receives new `src` key after `watch_event`")
+
+				t.true("prevs" in f._, "add the `prevs` key to task internals")
+				t.true(Array.isArray(f._.prevs), "the `f._.prevs` key is an array")
+				t.equal(f._.prevs[0], glob, "save the previous `glob` to `fly._.prevs`")
+
+				// finished, force exit
+				setTimeout(() => process.exit(0), 100)
 			},
 			* bar(f, o) {
 				order.push("bar")
 				t.equal(o.val, val, "pass (initial) options to tasks on init")
+				t.equal(o.src, file, "(bar) receives new `src` key after `watch_event`")
 				return ++val
 			}
 		}
@@ -54,30 +64,6 @@ test("fly.watch", co(function * (t) {
 	t.true("watch" in fly.plugins, "attach watch plugin to fly")
 
 	yield fly.start("default", {val})
-	t.deepEqual(order, want, "run `watch` task chain in `serial` mode")
-	t.equal(val, 12, "truly `await` for chain completion")
-
-	// reset
-	order = []
-
-	// hijack / overwrite tasks
-	fly.tasks.foo.func = co(function * (f, o) {
-		order.push("foo")
-		t.equal(o.src, file, "(foo) receives new `src` key after `watch_event`")
-		t.deepEqual(order, want, "re-run chain in correct order")
-
-		t.true("prevs" in f._, "add the `prevs` key to task internals")
-		t.true(Array.isArray(f._.prevs), "the `f._.prevs` key is an array")
-		t.equal(f._.prevs[0], glob, "save the previous `glob` to `fly._.prevs`")
-
-		// finished, force exit
-		setTimeout(() => process.exit(0), 100)
-	})
-
-	fly.tasks.bar.func = co(function * (f, o) {
-		order.push("bar")
-		t.equal(o.src, file, "(bar) receives new `src` key after `watch_event`")
-	})
 
 	// force trigger
 	setTimeout(() => touch(file), 100)

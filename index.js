@@ -14,8 +14,6 @@ module.exports = function (fly) {
 		opts = opts || {}
 		// announce start
 		this.emit("fly_watch")
-		// do first run-through
-		yield this.serial(tasks, opts)
 
 		return require("chokidar")
 			.watch(globs, {ignoreInitial: 1})
