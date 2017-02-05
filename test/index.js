@@ -1,5 +1,7 @@
-const {join} = require("path")
-const {coroutine: co} = require("bluebird")
+"use strict"
+
+const join = require("path").join
+const co = require("bluebird").coroutine
 const touch = require("touch")
 const test = require("tape")
 const Fly = require("fly")
