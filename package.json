@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "bluebird": "^3.4.7",
-    "fly": "^2.0.0",
+    "fly": "^2.0.2",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
     "touch": "^1.0.0",
